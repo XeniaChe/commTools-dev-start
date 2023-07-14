@@ -45,7 +45,7 @@ const ctpClient = new ClientBuilder()
   // .withProjectKey(configs.projectKey) // .withProjectKey() is not required if the projectKey is included in authMiddlewareOptions
   .withClientCredentialsFlow(authMiddlewareOptions)
   .withHttpMiddleware(httpMiddlewareOptions)
-  .withLoggerMiddleware()
+  // .withLoggerMiddleware()
   .build();
 
 // Create apiRoot from the imported ClientBuilder and include your Project key

@@ -13,7 +13,8 @@
     "typescript": "^5.1.6"
   },
   "workspaces": [
-    "packages/*"
+    "apps/*",
+    "libs/*"
   ],
   "dependencies": {
     "@commercetools/platform-sdk": "^4.11.0",

@@ -1,10 +1,15 @@
-import fetch from 'node-fetch';
-require('dotenv').config();
+// import fetch from 'node-fetch';
+// require('dotenv').config();
 
 import {
   ClientBuilder,
-  type AuthMiddlewareOptions, // Required for auth
+  Client,
+  type Credentials,
+  // type AuthMiddlewareOptions, // Required for auth
   type HttpMiddlewareOptions, // Required for sending HTTP requests
+  // createAuthForPasswordFlow,
+  // createAuthForAnonymousSessionFlow,
+  Middleware,
 } from '@commercetools/sdk-client-v2';
 
 import {
@@ -13,7 +18,7 @@ import {
 } from '@commercetools/platform-sdk';
 
 // const scopes_raw = <string>(<unknown>process.env.CTP_SCOPES);
-
+/*
 const configs = {
   scopes_raw: <string>(<unknown>process.env.CTP_SCOPES),
   projectKey: <string>process.env.CTP_PROJECT_KEY,
@@ -48,14 +53,58 @@ const ctpClient = new ClientBuilder()
   // .withLoggerMiddleware()
   .build();
 
-// Create apiRoot from the imported ClientBuilder and include your Project key
-export const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
-  projectKey: configs.projectKey,
-});
 
+  
+  // Create apiRoot from the imported ClientBuilder and include your Project key
+  export const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
+    projectKey: configs.projectKey,
+  });
 const getProject = () => {
   return apiRoot.get().execute();
 };
 
 // Retrieve Project information and output the result to the log
 getProject().then(console.log).catch(console.error);
+ */
+
+interface Options {
+  projectKey: string;
+  oauthUri?: string;
+  baseUri?: string;
+  credentials?: Credentials;
+}
+
+export class ClientBuild {
+  #projectKey: string;
+  #oauthUri?: string;
+  #baseUri?: string;
+  #credentials?: Credentials;
+
+  constructor({ oauthUri, projectKey, baseUri, credentials }: Options) {
+    this.#oauthUri = oauthUri;
+    this.#projectKey = projectKey;
+    this.#baseUri = baseUri;
+    this.#credentials = credentials;
+  }
+
+  getClient(options: {
+    authMiddleware: Middleware;
+    httpMiddlewareOptions: HttpMiddlewareOptions;
+  }) {
+    const { authMiddleware, httpMiddlewareOptions } = options;
+
+    return new ClientBuilder()
+      .withProjectKey(this.#projectKey)
+      .withMiddleware(authMiddleware)
+      .withHttpMiddleware(httpMiddlewareOptions)
+      .build();
+  }
+
+  getApiRoot(client: Client) {
+    return createApiBuilderFromCtpClient(client);
+  }
+
+  getProjectKey() {
+    return this.#projectKey;
+  }
+}

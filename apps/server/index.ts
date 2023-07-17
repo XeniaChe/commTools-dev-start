@@ -1,7 +1,6 @@
-import dotenv from 'dotenv';
 import server from './src/app';
 
-dotenv.config();
+require('dotenv').config();
 
 // unhandledRejection
 process.on('unhandledRejection', function (reason, promise) {

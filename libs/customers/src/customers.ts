@@ -1,30 +1,65 @@
-import { apiRoot } from 'client';
+import { ClientBuild } from 'client';
 
-export const createCustomer = (
-  custEmail: string,
-  custPass: string,
-  custFName: string,
-  custLName: string
-) => {
-  return apiRoot
-    .customers()
-    .post({
-      body: {
-        email: custEmail,
-        password: custPass,
-        firstName: custFName,
-        lastName: custLName,
-      },
-    })
-    .execute();
-};
+import { ApiRoot, CustomerDraft } from '@commercetools/platform-sdk';
+import {
+  Credentials,
+  Middleware,
+  type HttpMiddlewareOptions,
+} from '@commercetools/sdk-client-v2';
 
-export const getCustomer = (id: string) => {
-  return apiRoot.customers().withId({ ID: id }).get().execute();
-};
+interface Options {
+  projectKey: string;
+  oauthUri?: string;
+  baseUri?: string;
+  credentials?: Credentials;
+  authMiddleware: Middleware;
+  httpMiddlewareOptions: HttpMiddlewareOptions;
+}
 
-export const getRandomNum = () => Math.ceil(Math.random() * 1000);
+export class CustomerManager {
+  #apiRoot: ApiRoot;
+  #ProjectKey: string;
 
-export const getCustomers = () => {
-  return apiRoot.customers().get().execute();
-};
+  constructor(options: Options) {
+    const rootClient = new ClientBuild(options);
+
+    this.#apiRoot = rootClient.getApiRoot(rootClient.getClient(options));
+    this.#ProjectKey = rootClient.getProjectKey();
+  }
+
+  getCustDraft(custData: CustomerDraft) {
+    const { email, password, firstName, lastName } = custData;
+    return {
+      email,
+      password,
+      firstName,
+      lastName,
+    };
+  }
+
+  async createCustomer(custData: CustomerDraft) {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .customers()
+      .post({
+        body: this.getCustDraft(custData),
+      })
+      .execute();
+  }
+
+  async getCustomers() {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .customers()
+      .get()
+      .execute();
+  }
+
+  async customerSignIn(email: string, password: string) {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .login()
+      .post({ body: { email, password } })
+      .execute();
+  }
+}

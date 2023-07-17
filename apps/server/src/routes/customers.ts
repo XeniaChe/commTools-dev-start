@@ -4,6 +4,7 @@ import { CustomerController } from '../controllers';
 const router = Router();
 const custCtrlr = new CustomerController();
 router.get('/customers', custCtrlr.getAllCustomers);
-router.post('/customers/new', custCtrlr.addCustomer);
+router.post('/customers', custCtrlr.addCustomer);
+router.post('/login', custCtrlr.signIn);
 
 export default router;

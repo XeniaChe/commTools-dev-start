@@ -19,14 +19,14 @@ export class CustomerController {
     const options = getOptions(<null>(<unknown>req.headers));
 
     try {
-      const customer = (
+      const { customer } = (
         await new CustomerManager(options).createCustomer({
           email,
           password,
           firstName,
           lastName,
         })
-      ).body.customer;
+      ).body;
 
       /*  if (data?.statusCode == 201) {
       return ResponseHandler.successResponse(
@@ -48,7 +48,9 @@ export class CustomerController {
     } catch (error) {
       console.error(error);
 
-      res.status(500).json({ error: 'server error' });
+      const msg = error instanceof Error ? error?.message : 'Server error';
+
+      res.status(500).json({ error: `Error creating customer. Cause: ${msg}` });
     }
   }
 
@@ -63,7 +65,11 @@ export class CustomerController {
     } catch (error) {
       console.error(error);
 
-      res.status(500).json({ error: error });
+      const msg = error instanceof Error ? error?.message : 'Server error';
+
+      res
+        .status(500)
+        .json({ error: `Error fetching customers. Cause: ${msg}` });
     }
   }
 
@@ -79,16 +85,17 @@ export class CustomerController {
         password,
       });
 
-      const customer = await new CustomerManager(oprions).customerSignIn(
-        username,
-        password
-      );
+      const { customer } = (
+        await new CustomerManager(oprions).customerSignIn(username, password)
+      ).body;
 
-      res.json(customer);
+      res.json({ customer });
     } catch (error) {
       console.error(error);
 
-      res.status(500).json({ error: 'server error' });
+      const msg = error instanceof Error ? error?.message : 'Server error';
+
+      res.status(500).json({ error: `Error while signing in. Cause: ${msg}` });
     }
   }
 
@@ -96,19 +103,23 @@ export class CustomerController {
     try {
       const { id } = req.params;
       const options = getOptions();
-      const customer = await new CustomerManager(options).getCustomerById(id);
+      const customer = (await new CustomerManager(options).getCustomerById(id))
+        .body;
 
       res.json({ customer });
     } catch (error) {
       console.error(error);
+      const msg = error instanceof Error ? error?.message : 'Server error';
 
-      res.status(500).json({ error: 'server error' });
+      res
+        .status(500)
+        .json({ error: `Error fetching single customer. Cause: ${msg}` });
     }
   }
 
   async verifyEmail(req: Request, res: Response) {
+    const { id, username, password } = req.body;
     try {
-      const { id, username, password } = req.body;
       const options = getOptions(<null>(<unknown>req.headers), {
         username,
         password,
@@ -119,17 +130,19 @@ export class CustomerController {
       ).body.value;
 
       // Verify email of Customer
-      const isEmailVerified = (
+      const { isEmailVerified } = (
         await new CustomerManager(options).customerVerifyEmail(emailToken)
-      ).body.isEmailVerified;
+      ).body;
 
       res.json({ isEmailVerified });
     } catch (error) {
       console.error(error);
 
-      const msg = /* error?.message || */ 'Server error';
+      const msg = error instanceof Error ? error?.message : 'Server error';
 
-      res.status(500).json({ error: msg });
+      res.status(500).json({
+        error: `Error verifying ${id} customer's email. Cause: ${msg}`,
+      });
     }
   }
 }

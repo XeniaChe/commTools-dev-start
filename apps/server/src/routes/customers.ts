@@ -8,5 +8,6 @@ router.post('/customers', custCtrlr.addCustomer);
 router.post('/login', custCtrlr.signIn);
 router.get('/customers/:id', custCtrlr.getSingleCustomer);
 router.post('/customers/emailVerify', custCtrlr.verifyEmail);
+//TODO: add logOut
 
 export default router;

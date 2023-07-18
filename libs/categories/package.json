@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "categories",
   "version": "1.0.0",
   "scripts": {
     "start": "ts-node index.ts",

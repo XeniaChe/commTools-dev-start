@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
-import {
-  /* createCustomer, getCustomers, getRandomNum */ CustomerManager,
-} from 'customers';
+import { CustomerManager } from 'customers';
 import { getOptions } from 'client';
 import { CustomerDraft } from '@commercetools/platform-sdk';
-import { strict } from 'assert';
 
 /**
  * @description CustomerController
@@ -13,6 +10,7 @@ import { strict } from 'assert';
  * @function getCustomer
  */
 
+// TODO: error hadnling in Express+TS
 export class CustomerController {
   constructor() {}
 
@@ -91,6 +89,47 @@ export class CustomerController {
       console.error(error);
 
       res.status(500).json({ error: 'server error' });
+    }
+  }
+
+  async getSingleCustomer(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const options = getOptions();
+      const customer = await new CustomerManager(options).getCustomerById(id);
+
+      res.json({ customer });
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({ error: 'server error' });
+    }
+  }
+
+  async verifyEmail(req: Request, res: Response) {
+    try {
+      const { id, username, password } = req.body;
+      const options = getOptions(<null>(<unknown>req.headers), {
+        username,
+        password,
+      });
+
+      const emailToken = (
+        await new CustomerManager(options).getCustomerEmailToken(id)
+      ).body.value;
+
+      // Verify email of Customer
+      const isEmailVerified = (
+        await new CustomerManager(options).customerVerifyEmail(emailToken)
+      ).body.isEmailVerified;
+
+      res.json({ isEmailVerified });
+    } catch (error) {
+      console.error(error);
+
+      const msg = /* error?.message || */ 'Server error';
+
+      res.status(500).json({ error: msg });
     }
   }
 }

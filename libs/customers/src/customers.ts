@@ -62,4 +62,40 @@ export class CustomerManager {
       .post({ body: { email, password } })
       .execute();
   }
+
+  async getCustomerById(id: string) {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .customers()
+      .withId({ ID: id })
+      .get()
+      .execute();
+  }
+
+  async getCustomerEmailToken(id: string) {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .customers()
+      .emailToken()
+      .post({ body: { id, ttlMinutes: 555 } })
+      .execute();
+  }
+
+  async getCustomerByEmailToken(token: string) {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .customers()
+      .withEmailToken({ emailToken: token })
+      .get()
+      .execute();
+  }
+
+  async customerVerifyEmail(token: string) {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .customers()
+      .emailConfirm()
+      .post({ body: { tokenValue: token } })
+      .execute();
+  }
 }

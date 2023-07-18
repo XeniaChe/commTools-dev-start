@@ -48,7 +48,6 @@ export const getOptions = (
         scopes: configs.scopes_raw.split(' '),
       });
 
-  console.log({ authMiddleware });
   return {
     projectKey: configs.projectKey,
     authMiddleware,

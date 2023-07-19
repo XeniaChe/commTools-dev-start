@@ -3,24 +3,23 @@ import { CustomerManager } from 'customers';
 import { getOptions } from 'client';
 import { CustomerDraft } from '@commercetools/platform-sdk';
 
-/**
- * @description CustomerController
- *
- * @function createCustomer
- * @function getCustomer
- */
-
-// TODO: error hadnling in Express+TS
+// TODO:
 export class CustomerController {
-  constructor() {}
+  options;
+  custrManager = new CustomerManager(getOptions());
+
+  constructor() {
+    this.options = getOptions();
+    // this.custrManager = new CustomerManager(this.#options);
+  }
 
   async addCustomer(req: Request, res: Response) {
     const { email, password, firstName, lastName } = req.body as CustomerDraft;
-    const options = getOptions(<null>(<unknown>req.headers));
+    // const options = getOptions(<null>(<unknown>req.headers));
 
     try {
       const { customer } = (
-        await new CustomerManager(options).createCustomer({
+        await new CustomerManager(getOptions()).createCustomer({
           email,
           password,
           firstName,
@@ -55,11 +54,12 @@ export class CustomerController {
   }
 
   async getAllCustomers(req: Request, res: Response) {
-    const options = getOptions(<null>(<unknown>req.headers));
+    const fun = this;
+    console.log({ fun }); // UNDEFINED !!!!???? //TODO: check
 
     try {
-      const cstmrs = (await new CustomerManager(options).getCustomers()).body
-        .results;
+      const cstmrs = (await new CustomerManager(getOptions()).getCustomers())
+        .body.results;
 
       res.json({ customers: cstmrs });
     } catch (error) {
@@ -80,13 +80,16 @@ export class CustomerController {
         password: string;
       };
 
-      const oprions = getOptions(<null>(<unknown>req.headers), {
+      /* const oprions = getOptions(<null>(<unknown>req.headers), {
         username,
         password,
-      });
+      }); */
 
       const { customer } = (
-        await new CustomerManager(oprions).customerSignIn(username, password)
+        await new CustomerManager(getOptions()).customerSignIn(
+          username,
+          password
+        )
       ).body;
 
       res.json({ customer });
@@ -102,9 +105,10 @@ export class CustomerController {
   async getSingleCustomer(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const options = getOptions();
-      const customer = (await new CustomerManager(options).getCustomerById(id))
-        .body;
+      // const options = getOptions();
+      const customer = (
+        await new CustomerManager(getOptions()).getCustomerById(id)
+      ).body;
 
       res.json({ customer });
     } catch (error) {
@@ -120,18 +124,18 @@ export class CustomerController {
   async verifyEmail(req: Request, res: Response) {
     const { id, username, password } = req.body;
     try {
-      const options = getOptions(<null>(<unknown>req.headers), {
+      /* const options = getOptions(<null>(<unknown>req.headers), {
         username,
         password,
-      });
+      }); */
 
       const emailToken = (
-        await new CustomerManager(options).getCustomerEmailToken(id)
+        await new CustomerManager(getOptions()).getCustomerEmailToken(id)
       ).body.value;
 
       // Verify email of Customer
       const { isEmailVerified } = (
-        await new CustomerManager(options).customerVerifyEmail(emailToken)
+        await new CustomerManager(getOptions()).customerVerifyEmail(emailToken)
       ).body;
 
       res.json({ isEmailVerified });

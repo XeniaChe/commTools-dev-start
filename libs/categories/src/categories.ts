@@ -3,7 +3,7 @@ import { ClientBuild } from 'client';
 import {
   ApiRoot,
   CategoryDraft,
-  CategoryUpdateAction,
+  // CategoryUpdateAction,
 } from '@commercetools/platform-sdk';
 import {
   Credentials,
@@ -14,6 +14,7 @@ import {
 interface Options {
   projectKey: string;
   credentials?: Credentials;
+  // TODO: verify if built-in AuthMiddleware can be removed
   authMiddleware: Middleware;
   httpMiddlewareOptions: HttpMiddlewareOptions;
 }

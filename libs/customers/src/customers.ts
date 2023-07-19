@@ -12,6 +12,7 @@ interface Options {
   oauthUri?: string;
   baseUri?: string;
   credentials?: Credentials;
+  // TODO: verify if built-in AuthMiddleware can be removed
   authMiddleware: Middleware;
   httpMiddlewareOptions: HttpMiddlewareOptions;
 }

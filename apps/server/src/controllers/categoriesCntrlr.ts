@@ -3,15 +3,19 @@ import { CategoryManager } from 'categories';
 import { getOptions } from 'client';
 
 export class CategoriesController {
-  constructor() {}
+  #CategoryManager;
+  #options = getOptions();
+  constructor() {
+    this.#CategoryManager = new CategoryManager(this.#options);
+  }
 
   async addCategory(req: Request, res: Response) {
     const { catName, description } = req.body;
     try {
-      const options = getOptions(<null>(<unknown>req.headers));
+      // const options = getOptions(<null>(<unknown>req.headers));
 
       const category = (
-        await new CategoryManager(options).createCategory(catName, description)
+        await this.#CategoryManager.createCategory(catName, description)
       ).body;
 
       res.json({ category });
@@ -29,16 +33,15 @@ export class CategoriesController {
     const { description } = req.body;
 
     try {
-      const options = getOptions(<null>(<unknown>req.headers));
+      // const options = getOptions(<null>(<unknown>req.headers));
 
-      let prevVersion = (await new CategoryManager(options).getCatById(id)).body
-        .version;
+      let version = (await this.#CategoryManager.getCatById(id)).body.version;
 
       const category = (
-        await new CategoryManager(options).editCategoryDescription(
+        await this.#CategoryManager.editCategoryDescription(
           id,
           description,
-          prevVersion
+          version
         )
       ).body;
 

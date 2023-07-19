@@ -12,8 +12,8 @@ process.on('uncaughtException', function (error, origin) {
 });
 
 // start
-server.listen(process.env.PORT, () =>
-  console.log(`server listening on port ${process.env.PORT}`)
+server.listen(process.env.COMTOOLS_PORT, () =>
+  console.log(`server listening on port ${process.env.COMTOOLS_PORT}`)
 );
 
 export default server;

@@ -23,7 +23,9 @@ export const getOptions = (
   }
 ) => {
   console.log({ headers });
-  const authMiddleware: Middleware = credentials
+  // TODO: verify if built-in AuthMiddleware can be removed
+
+  /*  const authMiddleware: Middleware = credentials
     ? createAuthForPasswordFlow({
         host: <string>process.env.CTP_AUTH_URL,
         projectKey: configs.projectKey,
@@ -47,6 +49,18 @@ export const getOptions = (
         fetch,
         scopes: configs.scopes_raw.split(' '),
       });
+ */
+
+  const authMiddleware: Middleware = createAuthForAnonymousSessionFlow({
+    host: <string>process.env.CTP_AUTH_URL,
+    projectKey: configs.projectKey,
+    credentials: {
+      clientId: configs.clientId,
+      clientSecret: configs.clientSecret,
+    },
+    fetch,
+    scopes: configs.scopes_raw.split(' '),
+  });
 
   return {
     projectKey: configs.projectKey,

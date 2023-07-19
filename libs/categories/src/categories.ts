@@ -46,10 +46,10 @@ export class CategoryManager {
   #apiRoot: ApiRoot;
   #ProjectKey: string;
 
-  constructor(options: Options) {
-    const rootClient = new ClientBuild(options);
+  constructor(/* options: Options */) {
+    const rootClient = new ClientBuild(/* options */);
 
-    this.#apiRoot = rootClient.getApiRoot(rootClient.getClient(options));
+    this.#apiRoot = rootClient.getApiRoot(rootClient.getClient(/* options */));
     this.#ProjectKey = rootClient.getProjectKey();
   }
 

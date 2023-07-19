@@ -15,10 +15,10 @@ const router = Router();
 const custCtrlr = new CustomerController();
 
 router.post('/login', custCtrlr.signIn);
+router.post('/customers', custCtrlr.addCustomer);
 
 router.use(checkJwt);
 router.get('/customers', custCtrlr.getAllCustomers);
-router.post('/customers', custCtrlr.addCustomer);
 router.get('/customers/:id', custCtrlr.getSingleCustomer);
 router.post('/customers/emailVerify', custCtrlr.verifyEmail);
 //TODO: add logOut

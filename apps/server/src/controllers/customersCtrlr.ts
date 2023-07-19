@@ -1,25 +1,29 @@
 import { Request, Response } from 'express';
 import { CustomerManager } from 'customers';
-import { getOptions } from 'client';
+// import { getOptions } from 'client';
 import { CustomerDraft } from '@commercetools/platform-sdk';
+
+const custManager = new CustomerManager();
 
 // TODO:
 export class CustomerController {
-  options;
-  custrManager = new CustomerManager(getOptions());
+  // custrManager: CustomerManager;
+  // color: string;
 
   constructor() {
-    this.options = getOptions();
+    // this.color = 'ÓRANGE';
+    // this.custrManager = new CustomerManager();
+    // this.options = getOptions();
     // this.custrManager = new CustomerManager(this.#options);
   }
 
   async addCustomer(req: Request, res: Response) {
     const { email, password, firstName, lastName } = req.body as CustomerDraft;
     // const options = getOptions(<null>(<unknown>req.headers));
-
+    // const options = { projectKey: <string>process.env.CTP_PROJECT_KEY };
     try {
       const { customer } = (
-        await new CustomerManager(getOptions()).createCustomer({
+        await new CustomerManager(/* options */).createCustomer({
           email,
           password,
           firstName,
@@ -54,12 +58,11 @@ export class CustomerController {
   }
 
   async getAllCustomers(req: Request, res: Response) {
-    const fun = this;
-    console.log({ fun }); // UNDEFINED !!!!???? //TODO: check
-
     try {
-      const cstmrs = (await new CustomerManager(getOptions()).getCustomers())
-        .body.results;
+      // const fun = this.color;
+      // console.log({ fun }); // UNDEFINED !!!!???? //TODO: check
+
+      const cstmrs = (await custManager.getCustomers()).body.results;
 
       res.json({ customers: cstmrs });
     } catch (error) {
@@ -86,10 +89,7 @@ export class CustomerController {
       }); */
 
       const { customer } = (
-        await new CustomerManager(getOptions()).customerSignIn(
-          username,
-          password
-        )
+        await custManager.customerSignIn(username, password)
       ).body;
 
       res.json({ customer });
@@ -106,9 +106,7 @@ export class CustomerController {
     try {
       const { id } = req.params;
       // const options = getOptions();
-      const customer = (
-        await new CustomerManager(getOptions()).getCustomerById(id)
-      ).body;
+      const customer = (await custManager.getCustomerById(id)).body;
 
       res.json({ customer });
     } catch (error) {
@@ -122,20 +120,19 @@ export class CustomerController {
   }
 
   async verifyEmail(req: Request, res: Response) {
-    const { id, username, password } = req.body;
+    const { id /* , username, password */ } = req.body;
     try {
       /* const options = getOptions(<null>(<unknown>req.headers), {
         username,
         password,
       }); */
 
-      const emailToken = (
-        await new CustomerManager(getOptions()).getCustomerEmailToken(id)
-      ).body.value;
+      const emailToken = (await custManager.getCustomerEmailToken(id)).body
+        .value;
 
       // Verify email of Customer
       const { isEmailVerified } = (
-        await new CustomerManager(getOptions()).customerVerifyEmail(emailToken)
+        await custManager.customerVerifyEmail(emailToken)
       ).body;
 
       res.json({ isEmailVerified });

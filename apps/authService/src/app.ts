@@ -1,19 +1,19 @@
 import express, { Response } from 'express';
 const { auth } = require('express-openid-connect');
-
 import cors from 'cors';
 
 import routes from './routes';
 
 const app = express();
 
+require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const config = {
   authRequired: false,
-  idpLogout: true,
+  // idpLogout: true,
   auth0Logout: true,
   baseURL: 'http://localhost:3000', //TODO: switch once init connect done
   clientID: process.env.AUTH_CLIENT_ID,

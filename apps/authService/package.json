@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "buid/index.js",
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "nodemon ts-node index.ts",
     "build": "tsc"
   },
   "dependencies": {},

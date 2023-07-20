@@ -1,2 +1,3 @@
 export * from './customersCtrlr';
-export * from './categoriesCntrlr';
+export * from './categoriesCtrlr';
+export * from './productsCtrlr';

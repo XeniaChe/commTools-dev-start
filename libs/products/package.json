@@ -1,0 +1,12 @@
+{
+  "name": "products",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "client": "*"
+  },
+  "devDependencies": {}
+}

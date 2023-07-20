@@ -9,6 +9,10 @@ import {
   Middleware,
 } from '@commercetools/sdk-client-v2';
 
+import fetch from 'node-fetch';
+
+require('dotenv').config();
+
 import {
   // ApiRoot,
   createApiBuilderFromCtpClient,

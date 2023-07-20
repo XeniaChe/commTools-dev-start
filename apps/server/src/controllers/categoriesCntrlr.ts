@@ -1,21 +1,19 @@
 import { Request, Response } from 'express';
 import { CategoryManager } from 'categories';
-import { getOptions } from 'client';
 
 export class CategoriesController {
-  #CategoryManager;
-  #options = getOptions();
+  catManager: CategoryManager;
+
   constructor() {
-    this.#CategoryManager = new CategoryManager(this.#options);
+    this.catManager = new CategoryManager();
   }
 
   async addCategory(req: Request, res: Response) {
     const { catName, description } = req.body;
-    try {
-      // const options = getOptions(<null>(<unknown>req.headers));
 
+    try {
       const category = (
-        await this.#CategoryManager.createCategory(catName, description)
+        await this.catManager.createCategory(catName, description)
       ).body;
 
       res.json({ category });
@@ -33,16 +31,10 @@ export class CategoriesController {
     const { description } = req.body;
 
     try {
-      // const options = getOptions(<null>(<unknown>req.headers));
-
-      let version = (await this.#CategoryManager.getCatById(id)).body.version;
+      let version = (await this.catManager.getCatById(id)).body.version;
 
       const category = (
-        await this.#CategoryManager.editCategoryDescription(
-          id,
-          description,
-          version
-        )
+        await this.catManager.editCategoryDescription(id, description, version)
       ).body;
 
       res.json({ category });

@@ -13,14 +13,16 @@ const checkJwt = auth({
 
 const router = Router();
 const custCtrlr = new CustomerController();
+const { signIn, addCustomer, getAllCustomers, getSingleCustomer, verifyEmail } =
+  custCtrlr;
 
-router.post('/login', custCtrlr.signIn);
-router.post('/customers', custCtrlr.addCustomer);
+router.post('/login', signIn.bind(custCtrlr));
+router.post('/customers', addCustomer.bind(custCtrlr));
 
 router.use(checkJwt);
-router.get('/customers', custCtrlr.getAllCustomers);
-router.get('/customers/:id', custCtrlr.getSingleCustomer);
-router.post('/customers/emailVerify', custCtrlr.verifyEmail);
+router.get('/customers', getAllCustomers.bind(custCtrlr));
+router.get('/customers/:id', getSingleCustomer.bind(custCtrlr));
+router.post('/customers/emailVerify', verifyEmail.bind(custCtrlr));
 //TODO: add logOut
 
 export default router;

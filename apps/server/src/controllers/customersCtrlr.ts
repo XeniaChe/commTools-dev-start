@@ -2,28 +2,33 @@ import { Request, Response } from 'express';
 import { CustomerManager } from 'customers';
 // import { getOptions } from 'client';
 import { CustomerDraft } from '@commercetools/platform-sdk';
+// import axios from 'axios';
+require('dotenv').config();
 
-const custManager = new CustomerManager();
+/* interface AxiosResponse {
+  access_token: string;
+} */
 
-// TODO:
 export class CustomerController {
-  // custrManager: CustomerManager;
-  // color: string;
+  custManager: CustomerManager;
 
   constructor() {
-    // this.color = 'ÓRANGE';
-    // this.custrManager = new CustomerManager();
+    this.custManager = new CustomerManager();
     // this.options = getOptions();
     // this.custrManager = new CustomerManager(this.#options);
   }
 
   async addCustomer(req: Request, res: Response) {
+    // TODO: Add obtaining Acess_Token
+
     const { email, password, firstName, lastName } = req.body as CustomerDraft;
-    // const options = getOptions(<null>(<unknown>req.headers));
-    // const options = { projectKey: <string>process.env.CTP_PROJECT_KEY };
+
+    /*     const url = `http://localhost:${process.env.AUTHSERV_PORT}/auth/get-token`;
+    const { access_token } = <AxiosResponse>(await axios.post(url)).data;
+ */
     try {
       const { customer } = (
-        await new CustomerManager(/* options */).createCustomer({
+        await this.custManager.createCustomer({
           email,
           password,
           firstName,
@@ -59,10 +64,7 @@ export class CustomerController {
 
   async getAllCustomers(req: Request, res: Response) {
     try {
-      // const fun = this.color;
-      // console.log({ fun }); // UNDEFINED !!!!???? //TODO: check
-
-      const cstmrs = (await custManager.getCustomers()).body.results;
+      const cstmrs = (await this.custManager.getCustomers()).body.results;
 
       res.json({ customers: cstmrs });
     } catch (error) {
@@ -77,6 +79,9 @@ export class CustomerController {
   }
 
   async signIn(req: Request, res: Response) {
+    /* // TODO: Add obtaining Acess_Token
+    const url = `http://localhost:${process.env.AUTHSERV_PORT}/auth/profile`; */
+
     try {
       const { username, password } = req.body as {
         username: string;
@@ -89,9 +94,12 @@ export class CustomerController {
       }); */
 
       const { customer } = (
-        await custManager.customerSignIn(username, password)
+        await this.custManager.customerSignIn(username, password)
       ).body;
 
+      if (!customer) throw new Error('Wrong credentials');
+
+      // const test = <AxiosResponse>(await axios.get(url)).data;
       res.json({ customer });
     } catch (error) {
       console.error(error);
@@ -105,8 +113,7 @@ export class CustomerController {
   async getSingleCustomer(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      // const options = getOptions();
-      const customer = (await custManager.getCustomerById(id)).body;
+      const customer = (await this.custManager.getCustomerById(id)).body;
 
       res.json({ customer });
     } catch (error) {
@@ -127,12 +134,11 @@ export class CustomerController {
         password,
       }); */
 
-      const emailToken = (await custManager.getCustomerEmailToken(id)).body
+      const emailToken = (await this.custManager.getCustomerEmailToken(id)).body
         .value;
 
-      // Verify email of Customer
       const { isEmailVerified } = (
-        await custManager.customerVerifyEmail(emailToken)
+        await this.custManager.customerVerifyEmail(emailToken)
       ).body;
 
       res.json({ isEmailVerified });

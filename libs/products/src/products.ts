@@ -1,4 +1,4 @@
-import { ClientBuild } from 'client';
+import { apiRoot, projectKey } from 'client';
 
 import { ApiRoot, ProductDraft } from '@commercetools/platform-sdk';
 
@@ -7,10 +7,8 @@ export class ProductsManager {
   #ProjectKey: string;
 
   constructor() {
-    const rootClient = new ClientBuild();
-
-    this.#apiRoot = rootClient.getApiRoot(rootClient.getClient());
-    this.#ProjectKey = rootClient.getProjectKey();
+    this.#apiRoot = apiRoot;
+    this.#ProjectKey = projectKey;
   }
 
   async addProduct(prodData: ProductDraft) {
@@ -24,6 +22,22 @@ export class ProductsManager {
           slug: prodData.slug,
         },
       })
+      .execute();
+  }
+
+  async queryProducts() {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .products()
+      .get({ queryArgs: { sort: '' } })
+      .execute();
+  }
+
+  async queryProductProjections() {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .productProjections()
+      .get()
       .execute();
   }
 }

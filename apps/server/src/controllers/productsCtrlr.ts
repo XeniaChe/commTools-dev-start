@@ -13,12 +13,28 @@ export class ProductsController {
     const { productType, name, slug } = req.body as ProductDraft;
 
     try {
-      const products = await this.prodManager.addProduct({
+      const product = await this.prodManager.addProduct({
         productType,
         name,
         slug,
       });
 
+      res.json({ product });
+    } catch (error) {
+      console.error(error);
+
+      const msg = error instanceof Error ? error?.message : 'Server error';
+
+      res.status(500).json({ error: `Error creating category. Cause: ${msg}` });
+    }
+  }
+
+  async queryProdProjection(req: Request, res: Response) {
+    try {
+      const products = (await this.prodManager.queryProductProjections()).body
+        .results;
+
+      console.log({ products });
       res.json({ products });
     } catch (error) {
       console.error(error);

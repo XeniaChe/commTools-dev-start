@@ -1,23 +1,7 @@
-import { ClientBuild } from 'client';
+import { apiRoot, projectKey } from 'client';
 
-import {
-  ApiRoot,
-  CategoryDraft,
-  // CategoryUpdateAction,
-} from '@commercetools/platform-sdk';
-import {
-  Credentials,
-  Middleware,
-  type HttpMiddlewareOptions,
-} from '@commercetools/sdk-client-v2';
+import { ApiRoot, CategoryDraft } from '@commercetools/platform-sdk';
 
-interface Options {
-  projectKey: string;
-  credentials?: Credentials;
-  // TODO: verify if built-in AuthMiddleware can be removed
-  authMiddleware: Middleware;
-  httpMiddlewareOptions: HttpMiddlewareOptions;
-}
 /* 
 type catUpdtAction =
   | 'setAssetSources'
@@ -46,11 +30,9 @@ export class CategoryManager {
   #apiRoot: ApiRoot;
   #ProjectKey: string;
 
-  constructor(/* options: Options */) {
-    const rootClient = new ClientBuild(/* options */);
-
-    this.#apiRoot = rootClient.getApiRoot(rootClient.getClient(/* options */));
-    this.#ProjectKey = rootClient.getProjectKey();
+  constructor() {
+    this.#apiRoot = apiRoot;
+    this.#ProjectKey = projectKey;
   }
 
   async createCategory(catName: string, description: string) {

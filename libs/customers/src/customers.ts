@@ -1,31 +1,14 @@
-import { ClientBuild } from 'client';
+import { apiRoot, projectKey } from 'client';
 
 import { ApiRoot, CustomerDraft } from '@commercetools/platform-sdk';
-import {
-  Credentials,
-  Middleware,
-  type HttpMiddlewareOptions,
-} from '@commercetools/sdk-client-v2';
-
-interface Options {
-  projectKey: string;
-  oauthUri?: string;
-  baseUri?: string;
-  credentials?: Credentials;
-  // TODO: verify if built-in AuthMiddleware can be removed
-  authMiddleware: Middleware;
-  httpMiddlewareOptions: HttpMiddlewareOptions;
-}
 
 export class CustomerManager {
   #apiRoot: ApiRoot;
   #ProjectKey: string;
 
-  constructor(/* options: Options */) {
-    const rootClient = new ClientBuild(/* options */);
-
-    this.#apiRoot = rootClient.getApiRoot(rootClient.getClient(/* options */));
-    this.#ProjectKey = rootClient.getProjectKey();
+  constructor() {
+    this.#apiRoot = apiRoot;
+    this.#ProjectKey = projectKey;
   }
 
   getCustDraft(custData: CustomerDraft) {

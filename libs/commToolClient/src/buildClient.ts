@@ -2,11 +2,8 @@ import {
   ClientBuilder,
   Client,
   type Credentials,
-  type AuthMiddlewareOptions, // Required for auth
-  type HttpMiddlewareOptions, // Required for sending HTTP requests
-  // createAuthForPasswordFlow,
-  // createAuthForAnonymousSessionFlow,
-  Middleware,
+  type AuthMiddlewareOptions,
+  type HttpMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
 
 import fetch from 'node-fetch';
@@ -14,19 +11,11 @@ import fetch from 'node-fetch';
 require('dotenv').config();
 
 import {
-  // ApiRoot,
+  ApiRoot,
   createApiBuilderFromCtpClient,
 } from '@commercetools/platform-sdk';
 
-interface Options {
-  projectKey: string;
-  oauthUri?: string;
-  baseUri?: string;
-  credentials?: Credentials;
-}
-
-export class ClientBuild {
-  // #projectKey: string;
+class ClientBuild {
   #oauthUri?: string;
   #baseUri?: string;
   #credentials?: Credentials;
@@ -40,7 +29,7 @@ export class ClientBuild {
     region: string;
   };
 
-  constructor(/* { oauthUri, projectKey, baseUri, credentials }: Options */) {
+  constructor() {
     this.#configs = {
       scopes_raw: <string>(<unknown>process.env.CTP_SCOPES),
       projectKey: <string>process.env.CTP_PROJECT_KEY,
@@ -48,11 +37,6 @@ export class ClientBuild {
       clientSecret: <string>process.env.CTP_CLIENT_SECRET,
       region: <string>process.env.CTP_REGION,
     };
-
-    /*     this.#oauthUri = oauthUri;
-    this.#projectKey = projectKey;
-    this.#baseUri = baseUri;
-    this.#credentials = credentials; */
 
     this.httpMiddlewareOptions = {
       host: <string>process.env.CTP_API_URL,
@@ -71,21 +55,13 @@ export class ClientBuild {
     };
   }
 
-  // TODO: verify if built-in AuthMiddleware can be removed
-  getClient(/* options: {
-    authMiddleware: Middleware;
-    httpMiddlewareOptions: HttpMiddlewareOptions;
-  } */) {
-    // const { authMiddleware, httpMiddlewareOptions } = options;
-
-    return (
-      new ClientBuilder()
-        .withProjectKey(this.#configs.projectKey)
-        // .withMiddleware(authMiddleware)
-        .withClientCredentialsFlow(this.authMiddlewareOptions)
-        .withHttpMiddleware(this.httpMiddlewareOptions)
-        .build()
-    );
+  getClient() {
+    return new ClientBuilder()
+      .withProjectKey(this.#configs.projectKey)
+      .withClientCredentialsFlow(this.authMiddlewareOptions)
+      .withLoggerMiddleware()
+      .withHttpMiddleware(this.httpMiddlewareOptions)
+      .build();
   }
 
   getApiRoot(client: Client) {
@@ -96,3 +72,7 @@ export class ClientBuild {
     return this.#configs.projectKey;
   }
 }
+
+const rootClient = new ClientBuild();
+export const apiRoot: ApiRoot = rootClient.getApiRoot(rootClient.getClient());
+export const projectKey: string = rootClient.getProjectKey();

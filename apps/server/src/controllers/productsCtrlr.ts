@@ -44,4 +44,24 @@ export class ProductsController {
       res.status(500).json({ error: `Error creating category. Cause: ${msg}` });
     }
   }
+
+  async queryProducts(req: Request, res: Response) {
+    let query = <string>req.query.queryKey;
+
+    try {
+      query =
+        '(masterData(current(slug(en="gabs-wallet-GMON17STUDIO-162-multi"))))';
+
+      const products = (await this.prodManager.queryProducts(query)).body
+        .results;
+
+      res.json({ products });
+    } catch (error) {
+      console.error(error);
+
+      const msg = error instanceof Error ? error?.message : 'Server error';
+
+      res.status(500).json({ error: `Error creating category. Cause: ${msg}` });
+    }
+  }
 }

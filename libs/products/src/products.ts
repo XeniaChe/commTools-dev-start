@@ -25,19 +25,23 @@ export class ProductsManager {
       .execute();
   }
 
-  async queryProducts() {
-    return this.#apiRoot
-      .withProjectKey({ projectKey: this.#ProjectKey })
-      .products()
-      .get({ queryArgs: { sort: '' } })
-      .execute();
-  }
-
   async queryProductProjections() {
     return this.#apiRoot
       .withProjectKey({ projectKey: this.#ProjectKey })
       .productProjections()
       .get()
+      .execute();
+  }
+
+  async queryProducts(query: string) {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .products()
+      .get({
+        queryArgs: {
+          where: query,
+        },
+      })
       .execute();
   }
 }

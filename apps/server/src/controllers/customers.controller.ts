@@ -1,13 +1,8 @@
 import { Request, Response } from 'express';
 import { CustomerManager } from 'customers';
-// import { getOptions } from 'client';
 import { CustomerDraft } from '@commercetools/platform-sdk';
 // import axios from 'axios';
 require('dotenv').config();
-
-/* interface AxiosResponse {
-  access_token: string;
-} */
 
 export class CustomerController {
   custManager: CustomerManager;

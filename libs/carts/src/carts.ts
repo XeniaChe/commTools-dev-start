@@ -18,4 +18,12 @@ export class CartsManager {
       .post({ body: cartData })
       .execute();
   }
+
+  async getAllCarts() {
+    return this.#apiRoot
+      .withProjectKey({ projectKey: this.#ProjectKey })
+      .carts()
+      .get()
+      .execute();
+  }
 }

@@ -48,17 +48,16 @@ export class CartsController {
 
   async genericCartUpdate(req: Request, res: Response) {
     const { id } = req.params;
-    let actionPayload = <addLineItem>req.body.actionPayload;
+    let actionPayload: addLineItem = req.body.actionPayload;
 
     try {
       const { version } = (await this.cartManager.getCartById(id)).body;
 
       if (actionPayload.action === ActionTypes.addLineItems) {
         actionPayload = {
-          action: req.body.actionPayload.action as string,
+          action: ActionTypes.addLineItems,
           variantId: req.body.actionPayload.variantId as number,
           productId: req.body.actionPayload.productId as string,
-          quantity: req.body.actionPayload.quantity as number,
         } as CartAddLineItemAction;
       }
 

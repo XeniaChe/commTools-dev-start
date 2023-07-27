@@ -55,7 +55,7 @@ export class CartsController {
 
       if (actionPayload.action === ActionTypes.addLineItems) {
         actionPayload = {
-          ...actionPayload,
+          action: req.body.actionPayload.action as string,
           variantId: req.body.actionPayload.variantId as number,
           productId: req.body.actionPayload.productId as string,
           quantity: req.body.actionPayload.quantity as number,

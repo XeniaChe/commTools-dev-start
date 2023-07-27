@@ -18,7 +18,7 @@ export class CartsController {
   }
 
   async addCart(req: Request, res: Response) {
-    const { currency } = <CartDraft>req.body;
+    const { currency }: CartDraft = req.body;
 
     try {
       const cart = (await this.cartManager.addCart({ currency })).body;
@@ -36,6 +36,7 @@ export class CartsController {
   async getAllCarts(req: Request, res: Response) {
     try {
       const carts = (await this.cartManager.getAllCarts()).body.results;
+
       res.json({ carts });
     } catch (error) {
       console.error(error);
@@ -79,7 +80,7 @@ export class CartsController {
     const { id } = req.params;
 
     try {
-      const cart = await this.cartManager.getCartById(<string>id);
+      const cart = (await this.cartManager.getCartById(<string>id)).body;
 
       res.json({ cart });
     } catch (error) {

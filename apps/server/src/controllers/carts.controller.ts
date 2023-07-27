@@ -75,4 +75,20 @@ export class CartsController {
       res.status(500).json({ error: `Error updating cart. Cause: ${msg}` });
     }
   }
+
+  async getCartById(req: Request, res: Response) {
+    const { id } = req.params;
+
+    try {
+      const cart = await this.cartManager.getCartById(<string>id);
+
+      res.json({ cart });
+    } catch (error) {
+      console.error(error);
+
+      const msg = error instanceof Error ? error?.message : 'Server error';
+
+      res.status(500).json({ error: `Error fetching cart. Cause: ${msg}` });
+    }
+  }
 }

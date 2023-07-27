@@ -1,6 +1,10 @@
 import { apiRoot, projectKey } from 'client';
 
-import { ApiRoot, CategoryDraft } from '@commercetools/platform-sdk';
+import {
+  ApiRoot,
+  CategoryDraft,
+  CategoryUpdateAction,
+} from '@commercetools/platform-sdk';
 
 /* 
 type catUpdtAction =
@@ -48,26 +52,19 @@ export class CategoryManager {
       .execute();
   }
 
-  /*   async editCategory(
+  async editCategory(
     id: string,
-    data: string,
-    newVer: number,
-    action: catUpdtAction
+    version: number,
+    actionPayload: CategoryUpdateAction
   ) {
-    const payload: CategoryUpdateAction[] = [{ action, slug: { en: data } }];
-
     return this.#apiRoot
       .withProjectKey({ projectKey: this.#ProjectKey })
       .categories()
       .withId({ ID: id })
-      .post({
-        body: {
-          version: newVer,
-          actions: payload,
-        },
-      })
+      .post({ body: { version, actions: [actionPayload] } })
       .execute();
-  } */
+  }
+
   async getCatById(id: string) {
     return this.#apiRoot
       .withProjectKey({ projectKey: this.#ProjectKey })
@@ -77,7 +74,7 @@ export class CategoryManager {
       .execute();
   }
 
-  async editCategoryDescription(id: string, data: string, newVer: number) {
+  async editCategoryDescription(id: string, data: string, version: number) {
     const LocalizedData = { en: data };
     return this.#apiRoot
       .withProjectKey({ projectKey: this.#ProjectKey })
@@ -85,7 +82,7 @@ export class CategoryManager {
       .withId({ ID: id })
       .post({
         body: {
-          version: newVer,
+          version,
           actions: [{ action: 'changeSlug', slug: LocalizedData }],
         },
       })

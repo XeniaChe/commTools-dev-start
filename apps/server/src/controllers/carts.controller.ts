@@ -1,6 +1,14 @@
 import { Request, Response } from 'express';
 import { CartsManager } from 'carts';
-import { CartDraft } from '@commercetools/platform-sdk';
+import {
+  CartDraft,
+  CartAddLineItemAction,
+  addLineItem,
+} from '@commercetools/platform-sdk';
+
+enum ActionTypes {
+  addLineItems = 'addLineItem',
+}
 
 export class CartsController {
   cartManager: CartsManager;
@@ -35,6 +43,36 @@ export class CartsController {
       const msg = error instanceof Error ? error?.message : 'Server error';
 
       res.status(500).json({ error: `Error fetching carts. Cause: ${msg}` });
+    }
+  }
+
+  async genericCartUpdate(req: Request, res: Response) {
+    const { id } = req.params;
+    let actionPayload = <addLineItem>req.body.actionPayload;
+
+    try {
+      const { version } = (await this.cartManager.getCartById(id)).body;
+
+      if (actionPayload.action === ActionTypes.addLineItems) {
+        actionPayload = {
+          ...actionPayload,
+          variantId: <number>req.body.actionPayload.variantId,
+          productId: <string>req.body.actionPayload.productId,
+          quantity: <number>req.body.actionPayload.quantity,
+        } as CartAddLineItemAction;
+      }
+
+      const cart = (
+        await this.cartManager.updateCart(id, version, actionPayload)
+      ).body;
+
+      res.json({ cart });
+    } catch (error) {
+      console.error(error);
+
+      const msg = error instanceof Error ? error?.message : 'Server error';
+
+      res.status(500).json({ error: `Error updating cart. Cause: ${msg}` });
     }
   }
 }

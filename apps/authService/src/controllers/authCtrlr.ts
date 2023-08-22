@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 interface OIDC {
   accessToken: string;
   isAuthenticated: () => {};
+  isExpired: () => {};
 }
 export class AuthController {
   constructor() {}
@@ -13,15 +14,17 @@ export class AuthController {
       // let accessToken = 'oidc' in req ? oidc.accessToken : null;
 
       let accessToken = null;
+      // isExpired = null;
       if ('oidc' in req) {
         const oidc = <OIDC>(<unknown>req.oidc);
 
         accessToken = oidc.accessToken;
+        // isExpired = oidc.isExpired;
       } else {
         throw new Error('Something wrong with OIDC');
       }
-
       console.log({ accessToken });
+      res.json(accessToken);
     } catch (error) {
       console.error(error);
 

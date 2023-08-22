@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { CustomerManager } from 'customers';
 import { CustomerDraft } from '@commercetools/platform-sdk';
-// import axios from 'axios';
-require('dotenv').config();
 
 export class CustomerController {
   custManager: CustomerManager;
@@ -14,13 +12,8 @@ export class CustomerController {
   }
 
   async addCustomer(req: Request, res: Response) {
-    // TODO: Add obtaining Acess_Token
-
     const { email, password, firstName, lastName } = req.body as CustomerDraft;
 
-    /*     const url = `http://localhost:${process.env.AUTHSERV_PORT}/auth/get-token`;
-    const { access_token } = <AxiosResponse>(await axios.post(url)).data;
- */
     try {
       const { customer } = (
         await this.custManager.createCustomer({
@@ -74,9 +67,6 @@ export class CustomerController {
   }
 
   async signIn(req: Request, res: Response) {
-    /* // TODO: Add obtaining Acess_Token
-    const url = `http://localhost:${process.env.AUTHSERV_PORT}/auth/profile`; */
-
     try {
       const { username, password } = req.body as {
         username: string;
@@ -94,7 +84,6 @@ export class CustomerController {
 
       if (!customer) throw new Error('Wrong credentials');
 
-      // const test = <AxiosResponse>(await axios.get(url)).data;
       res.json({ customer });
     } catch (error) {
       console.error(error);

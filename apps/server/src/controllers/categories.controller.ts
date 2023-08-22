@@ -10,7 +10,9 @@ enum ActionTypes {
   updtDescription = 'changeSlug',
   cahngeOrderHint = 'changeOrderHint',
 }
-
+// const foo = (a: string): string => a;
+const boo = <T>(a: T): T => a;
+const foo: <T>(b: T) => T = boo;
 export class CategoriesController {
   catManager: CategoryManager;
 

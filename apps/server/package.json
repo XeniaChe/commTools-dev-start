@@ -10,9 +10,8 @@
     "client": "*",
     "express-oauth2-jwt-bearer": "^1.5.0",
     "install": "^0.13.0",
-    "npm": "^9.8.0"
+    "npm": "^9.8.0",
+    "tsconfig": "*"
   },
-  "devDependencies": {
-    "customers": "*"
-  }
+  "devDependencies": {}
 }
